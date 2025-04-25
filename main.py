@@ -29,10 +29,10 @@ key_labels = {
 }
 
 button_mapping = {
-    "2": "hold",
-    "3": "hold",
-    "4": "hold",
-    "5": "hold",
+    "2": "hold_long",
+    "3": "hold_short",
+    "4": "hold_short",
+    "5": "hold_long",
     "6": Key.up,
     "7": Key.up,
     "8": Key.up
@@ -51,7 +51,7 @@ while True:
             if not holding[k]:
                 holding[k] = True
                 print(f"pressed {key_labels[k]}")
-                if button_mapping[k] != "hold":
+                if button_mapping[k] not in ["hold_long", "hold_short"]:
                     keyboard.press(button_mapping[k])
                 else:
                     keyboard.press(Key.up)
@@ -59,10 +59,13 @@ while True:
             if holding[k]:
                 holding[k] = False
                 print(f"released {key_labels[k]}")
-                if button_mapping[k] != "hold":
+                if button_mapping[k] not in ["hold_long", "hold_short"]:
                     keyboard.release(button_mapping[k])
+                elif button_mapping[k] == "hold_long":
+                    time.sleep(0.75)
+                    keyboard.release(Key.up)
                 else:
-                    time.sleep(0.5)
+                    time.sleep(0.25)
                     keyboard.release(Key.up)
 
 
