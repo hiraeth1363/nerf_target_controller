@@ -3,11 +3,11 @@ import serial
 import time
 from pynput.keyboard import Key, Controller as keyboard_controller
 from pynput.mouse import Button, Controller as mouse_controller
+import button_maps_file as bm
 
 keyboard = keyboard_controller()
 mouse = mouse_controller()
 ser = serial.Serial("COM3", 9600, timeout=0.01)
-tick = 0
 
 holding = {
     "2": False,
@@ -29,26 +29,9 @@ key_labels = {
     "8": "middle"
 }
 
-button_mapping_1 = {
-    "2": "a",
-    "3": "w",
-    "4": "s",
-    "5": "d",
-    "6": "e",
-    "7": "f",
-    "8": "shift_controls"
-}
-button_mapping_2 = {
-    "2": "m_left",
-    "3": "m_up",
-    "4": "m_down",
-    "5": "m_right",
-    "6": Button.left,
-    "7": Button.right,
-    "8": "shift_controls"
-}
+# ===================== manually swap button_maps =====================
+controls = [bm.button_mapping_gd]
 
-controls = [button_mapping_1, button_mapping_2]
 current_control_set = 0
 mouse_move_inst = ["m_up", "m_down", "m_left", "m_right"]
 mouse_click_inst = [Button.left, Button.right]
@@ -57,7 +40,6 @@ complex_inst = ["hold_long", "hold_short", "shift_controls"] + mouse_move_inst +
 print("on COM3")
 
 while True:
-    tick += 1
 
     code = ser.readline().decode("utf-8").strip()
     line = list(code)
@@ -72,7 +54,7 @@ while True:
 
                 elif controls[current_control_set][k] == "shift_controls":
                     current_control_set += 1
-                    if current_control_set == 2:
+                    if current_control_set > len(controls):
                         current_control_set = 0
 
                 elif controls[current_control_set][k] in mouse_move_inst:
